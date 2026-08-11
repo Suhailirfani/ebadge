@@ -31,26 +31,26 @@
                 </div>
                 <div class="brand-text">
                     <span class="brand-sub">UMMU HABEEBA VIRTUAL CAMPUS</span>
-                    <h1 class="brand-title">منصة البطاقات الإلكترونية</h1>
+                    <h1 class="brand-title">منصة البطاقات الإلكترونية / E-Badge System</h1>
                 </div>
             </div>
 
             <nav class="app-nav">
                 <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
                     <i class="fa-solid fa-id-card"></i>
-                    <span>إنشاء البطاقة</span>
+                    <span>إنشاء البطاقة / Creator</span>
                 </a>
                 <a href="{% url 'data_table' %}" class="nav-link {% if request.resolver_match.url_name == 'data_table' %}active{% endif %}">
                     <i class="fa-solid fa-table-list"></i>
-                    <span>جدول المشاركات</span>
+                    <span>جدول البيانات / Table</span>
                 </a>
                 <a href="{% url 'scanner' %}" class="nav-link {% if request.resolver_match.url_name == 'scanner' %}active{% endif %}">
                     <i class="fa-solid fa-qrcode"></i>
-                    <span>ماسح QR للتحقق</span>
+                    <span>ماسح QR / Scanner</span>
                 </a>
                 <a href="/admin/" target="_blank" class="nav-link admin-link">
                     <i class="fa-solid fa-user-shield"></i>
-                    <span>الإدارة</span>
+                    <span>الإدارة / Admin</span>
                 </a>
             </nav>
         </div>

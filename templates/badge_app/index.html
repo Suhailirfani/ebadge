@@ -1,15 +1,15 @@
 {% extends 'badge_app/base.html' %}
 {% load static %}
 
-{% block title %}إنشاء بطاقة إلكترونية جديدة - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}
+{% block title %}إنشاء بطاقة إلكترونية جديدة - E-Badge Creator - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <h2 class="page-title">
         <i class="fa-solid fa-id-card-clip" style="color: var(--primary-gold);"></i>
-        إنشاء البطاقات الإلكترونية للحفل
+        إنشاء البطاقات الإلكترونية / Create Student E-Badge
     </h2>
-    <p class="page-subtitle">أدخل بيانات المشاركة للحصول على بطاقة تخرج مخصصة عالية الجودة مع رمز الاستجابة السريعة (QR Code).</p>
+    <p class="page-subtitle">أدخل بيانات المشاركة للحصول على بطاقة مخصصة عالية الجودة مع رمز QR / Enter participant details to generate a high-resolution E-Badge with QR code.</p>
 </div>
 
 <div class="builder-grid">
@@ -17,65 +17,67 @@
     <div class="card-box form-card">
         <h3 class="card-title">
             <i class="fa-solid fa-pen-to-square"></i>
-            بيانات المشاركة
+            بيانات المشاركة / Participant Registration
         </h3>
 
         <form id="badgeForm" method="POST" enctype="multipart/form-data" action="{% url 'api_register' %}">
             {% csrf_token %}
 
             <div class="form-group">
-                <label class="form-label" for="full_name">اسم المشاركة الكامل <span class="req">*</span></label>
-                <input type="text" id="full_name" name="full_name" class="form-input" value="عَائِقَة حَبِيبَة" required placeholder="أدخلي الاسم الكامل مع التشكيل إن وجد">
+                <label class="form-label" for="full_name">اسم المشاركة الكامل / Full Name <span class="req">*</span></label>
+                <input type="text" id="full_name" name="full_name" class="form-input" value="عَائِقَة حَبِيبَة" required placeholder="أدخلي الاسم الكامل / Enter Full Name">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label" for="role">الصفة / اللقب</label>
+                    <label class="form-label" for="role">الصفة / Role</label>
                     <select id="role" name="role" class="form-select">
-                        <option value="متعلّمة" selected>متعلّمة</option>
-                        <option value="خريجة">خريجة</option>
-                        <option value="معلّمة">معلّمة</option>
-                        <option value="ضيفة شرف">ضيفة شرف</option>
-                        <option value="مشاركة">مشاركة</option>
+                        <option value="متعلّمة" selected>متعلّمة / Student</option>
+                        <option value="خريجة">خريجة / Graduate</option>
+                        <option value="معلّمة">معلّمة / Teacher</option>
+                        <option value="ضيفة شرف">ضيفة شرف / Guest</option>
+                        <option value="مشاركة">مشاركة / Participant</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="year">السنة</label>
-                    <input type="text" id="year" name="year" class="form-input" value="٢٠٢٦" placeholder="مثال: ٢٠٢٦">
+                    <label class="form-label" for="year">السنة / Year</label>
+                    <input type="text" id="year" name="year" class="form-input" value="٢٠٢٦" placeholder="مثال: ٢٠٢٦ / e.g. 2026">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label" for="batch">الدفعة</label>
-                    <input type="text" id="batch" name="batch" class="form-input" value="الدفعة الأولى" placeholder="مثال: الدفعة الأولى">
+                    <label class="form-label" for="batch">الدفعة / Batch</label>
+                    <input type="text" id="batch" name="batch" class="form-input" value="الدفعة الأولى" placeholder="مثال: الدفعة الأولى / e.g. Batch 1">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="class_name">الصف</label>
-                    <input type="text" id="class_name" name="class_name" class="form-input" value="الصف العاشر" placeholder="مثال: الصف العاشر">
+                    <label class="form-label" for="class_name">الصف / Class Grade</label>
+                    <input type="text" id="class_name" name="class_name" class="form-input" value="الصف العاشر" placeholder="مثال: الصف العاشر / e.g. Grade 10">
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="course">الدورة / التخصص</label>
-                <input type="text" id="course" name="course" class="form-input" value="الدراسات الإسلامية" placeholder="مثال: علوم القرآن والتفسير">
+                <label class="form-label" for="course">الدورة والتخصص / Course</label>
+                <input type="text" id="course" name="course" class="form-input" value="الدراسات الإسلامية" placeholder="مثال: الدراسات الإسلامية / e.g. Islamic Studies">
             </div>
 
             <!-- Numerals Toggle Option -->
-            <div class="form-group" style="background: #F1F5F9; padding: 12px 16px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between;">
-                <label for="useArabicDigits" style="font-weight: 700; cursor: pointer;">استخدام الأرقام العربية الشرقية (١، ٢، ٣)</label>
-                <input type="checkbox" id="useArabicDigits" checked style="width: 20px; height: 20px; accent-color: var(--primary-gold);">
+            <div class="form-group" style="background: #F1F5F9; padding: 14px 18px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+                <label for="useArabicDigits" style="font-weight: 800; cursor: pointer; color: var(--dark-navy);">
+                    الأرقام العربية الشرقية (١، ٢، ٣) / Arabic Digits
+                </label>
+                <input type="checkbox" id="useArabicDigits" checked style="width: 22px; height: 22px; accent-color: var(--primary-gold); cursor: pointer;">
             </div>
 
             <!-- Photo Upload Area -->
             <div class="form-group">
-                <label class="form-label">الصورة الشخصية</label>
+                <label class="form-label">الصورة الشخصية / Profile Photo</label>
                 <div class="photo-uploader" id="uploaderDropzone">
                     <i class="fa-solid fa-cloud-arrow-up uploader-icon"></i>
-                    <div class="uploader-text">اضغطي هنا لرفع صورة جديدة أو قصها</div>
-                    <div class="uploader-hint">تنسيقات مسموحة: JPG, PNG (يفضل صورة مربعة عالية الوضوح)</div>
+                    <div class="uploader-text">اضغطي هنا لرفع صورة جديدة أو قصها / Click to Upload Photo</div>
+                    <div class="uploader-hint">تنسيقات مسموحة: JPG, PNG / Formats: JPG, PNG</div>
                     <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none;">
                 </div>
             </div>
@@ -85,7 +87,7 @@
 
             <button type="submit" id="saveParticipantBtn" class="btn btn-primary btn-block">
                 <i class="fa-solid fa-floppy-disk"></i>
-                حفظ بيانات المشاركة واستخراج رمز QR
+                حفظ البيانات واستخراج رمز QR / Save & Generate QR Code
             </button>
         </form>
     </div>
@@ -95,7 +97,7 @@
         <div class="card-box" style="width: 100%; text-align: center;">
             <h3 class="card-title" style="justify-content: center;">
                 <i class="fa-solid fa-eye" style="color: var(--primary-gold);"></i>
-                المعاينة المباشرة للبطاقة
+                المعاينة المباشرة للبطاقة / Live Badge Preview
             </h3>
 
             <div class="canvas-wrapper">
@@ -103,23 +105,23 @@
             </div>
 
             <!-- Status Alert Banner -->
-            <div id="registrationStatusBanner" style="display: none; margin-bottom: 16px; padding: 12px; border-radius: 10px; background: #ECFDF5; border: 1px solid #10B981; color: #065F46; font-size: 14px; font-weight: 700;">
+            <div id="registrationStatusBanner" style="display: none; margin-bottom: 16px; padding: 14px; border-radius: 12px; background: #ECFDF5; border: 1px solid #10B981; color: #065F46; font-size: 14px; font-weight: 800;">
                 <i class="fa-solid fa-circle-check"></i>
-                تم تسجيل المشاركة بنجاح! رمز التسجيل: <span id="savedCodeSpan"></span>
+                تم تسجيل المشاركة بنجاح! رمز التسجيل / Reg Code: <span id="savedCodeSpan"></span>
             </div>
 
             <div class="action-buttons-group">
                 <button type="button" id="downloadPngBtn" class="btn btn-dark">
                     <i class="fa-solid fa-file-image"></i>
-                    تحميل PNG
+                    تحميل PNG / Download PNG
                 </button>
                 <button type="button" id="downloadPdfBtn" class="btn btn-outline">
                     <i class="fa-solid fa-file-pdf" style="color: #EF4444;"></i>
-                    تحميل PDF
+                    تحميل PDF / Download PDF
                 </button>
                 <button type="button" id="shareWhatsappBtn" class="btn btn-success" style="grid-column: span 2;">
                     <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i>
-                    مشاركة البطاقة عبر الواتساب
+                    مشاركة البطاقة عبر الواتساب / Share via WhatsApp
                 </button>
             </div>
         </div>
@@ -130,15 +132,15 @@
 <div class="modal-overlay" id="cropperModal">
     <div class="modal-container">
         <h3 style="margin-bottom: 16px; font-size: 18px; font-weight: 800; color: var(--dark-navy);">
-            <i class="fa-solid fa-crop"></i> قص وتعديل الصورة
+            <i class="fa-solid fa-crop"></i> قص وتعديل الصورة / Crop Photo
         </h3>
         <div class="crop-container">
             <img id="cropImageTarget" src="" alt="Crop target">
         </div>
         <div style="display: flex; gap: 12px; justify-content: flex-end;">
-            <button type="button" class="btn btn-outline" id="cancelCropBtn">إلغاء</button>
+            <button type="button" class="btn btn-outline" id="cancelCropBtn">إلغاء / Cancel</button>
             <button type="button" class="btn btn-primary" id="applyCropBtn">
-                <i class="fa-solid fa-check"></i> تطبيق الصورة
+                <i class="fa-solid fa-check"></i> تطبيق الصورة / Apply Crop
             </button>
         </div>
     </div>
@@ -278,7 +280,7 @@
             const formData = new FormData(badgeForm);
             const saveBtn = document.getElementById('saveParticipantBtn');
             saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ والتوليد...';
+            saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ والتوليد / Saving...';
 
             try {
                 const resp = await fetch('{% url "api_register" %}', {
@@ -293,15 +295,15 @@
                     savedCodeSpan.textContent = result.registration_code;
                     registrationStatusBanner.style.display = 'block';
 
-                    alert(`تم حفظ المشاركة بنجاح! رمز التسجيل الخاص بكِ: ${result.registration_code}`);
+                    alert(`تم حفظ المشاركة بنجاح! / Registered successfully! Registration Code: ${result.registration_code}`);
                 } else {
-                    alert('خطأ: ' + result.error);
+                    alert('خطأ / Error: ' + result.error);
                 }
             } catch (err) {
-                alert('تعذر حفظ البيانات: ' + err.message);
+                alert('فشل الحفظ / Save failed: ' + err.message);
             } finally {
                 saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> حفظ بيانات المشاركة واستخراج رمز QR';
+                saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> حفظ البيانات واستخراج رمز QR / Save & Generate QR Code';
             }
         });
 
@@ -325,7 +327,7 @@
 
         // WhatsApp Share Handler
         document.getElementById('shareWhatsappBtn').addEventListener('click', () => {
-            const message = `مرحباً! هذه بطاقة التخرج الخاصة بـ (${nameInput.value}) لـ حفل تخرج حبيبة ٢٠٢٦ - UMMU HABEEBA VIRTUAL CAMPUS.\nرمز التسجيل: ${registeredCode}`;
+            const message = `مرحباً! هذه بطاقة التخرج الخاصة بـ (${nameInput.value}) لـ حفل تخرج حبيبة ٢٠٢٦ - UMMU HABEEBA VIRTUAL CAMPUS.\nرمز التسجيل / Reg Code: ${registeredCode}`;
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         });
