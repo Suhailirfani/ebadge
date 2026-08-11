@@ -1,0 +1,221 @@
+{% extends 'badge_app/base.html' %}
+{% load static %}
+
+{% block title %}جدول بيانات المشاركات والبطاقات - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+    <div>
+        <h2 class="page-title">
+            <i class="fa-solid fa-table-list" style="color: var(--primary-gold);"></i>
+            جدول بيانات المشاركات والتسجيلات
+        </h2>
+        <p class="page-subtitle">استعراض وحفظ السجلات المكتملة، وتتبع حضور المشاركات عبر رمز QR.</p>
+    </div>
+    <div>
+        <a href="{% url 'export_csv' %}" class="btn btn-success">
+            <i class="fa-solid fa-file-excel"></i>
+            تصدير إلى قائمة CSV (إكسل)
+        </a>
+    </div>
+</div>
+
+<!-- Stats Summary Cards -->
+<div class="stats-cards">
+    <div class="stat-card">
+        <div class="stat-icon total">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+            <div class="stat-number">{{ total_count }}</div>
+            <div class="stat-label">إجمالي المسجلات</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon verified">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div>
+            <div class="stat-number">{{ verified_count }}</div>
+            <div class="stat-label">تم التأكيد والحضور</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon pending">
+            <i class="fa-solid fa-clock"></i>
+        </div>
+        <div>
+            <div class="stat-number">{{ unverified_count }}</div>
+            <div class="stat-label">في انتظار الحضور</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Bar -->
+<form method="GET" class="filter-bar">
+    <div class="search-field">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="q" value="{{ query }}" placeholder="البحث برمز التسجيل، الاسم الكامل، الصف أو الدورة...">
+    </div>
+
+    <select name="batch" class="form-select" style="width: auto; min-width: 180px;" onchange="this.form.submit()">
+        <option value="">جميع الدفعات</option>
+        {% for b in batches %}
+            <option value="{{ b }}" {% if batch_filter == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="status" class="form-select" style="width: auto; min-width: 180px;" onchange="this.form.submit()">
+        <option value="">جميع الحالات</option>
+        <option value="verified" {% if status_filter == 'verified' %}selected{% endif %}>تم الحضور</option>
+        <option value="unverified" {% if status_filter == 'unverified' %}selected{% endif %}>لم يتم الحضور</option>
+    </select>
+
+    {% if query or batch_filter or status_filter %}
+        <a href="{% url 'data_table' %}" class="btn btn-outline btn-sm">إلغاء التصفية</a>
+    {% endif %}
+</form>
+
+<!-- Data Table -->
+<div class="table-wrapper">
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>رمز التسجيل</th>
+                <th>اسم المشاركة</th>
+                <th>الصفة</th>
+                <th>الدفعة / الصف</th>
+                <th>الدورة</th>
+                <th>حالة التحقق (QR)</th>
+                <th>تاريخ التسجيل</th>
+                <th>الإجراءات والبطاقة</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in participants %}
+                <tr id="row-{{ p.id }}">
+                    <td>
+                        <strong style="color: var(--dark-navy); font-family: monospace; font-size: 15px;">{{ p.registration_code }}</strong>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            {% if p.photo %}
+                                <img src="{{ p.photo.url }}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-gold);">
+                            {% else %}
+                                <div style="width: 38px; height: 38px; border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-muted);">
+                                    {{ p.full_name|first }}
+                                </div>
+                            {% endif %}
+                            <span style="font-weight: 700;">{{ p.full_name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="background: #EEF2FF; color: var(--dark-navy); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 13px;">
+                            {{ p.role }}
+                        </span>
+                    </td>
+                    <td>
+                        <div>{{ p.batch|default:"-" }}</div>
+                        <small style="color: var(--text-muted);">{{ p.class_name }}</small>
+                    </td>
+                    <td>{{ p.course|default:"-" }}</td>
+                    <td>
+                        {% if p.is_verified %}
+                            <span class="status-tag verified">
+                                <i class="fa-solid fa-circle-check"></i>
+                                تم التأكيد
+                            </span>
+                        {% else %}
+                            <span class="status-tag unverified">
+                                <i class="fa-solid fa-clock"></i>
+                                لم يتم التحقق
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <small style="color: var(--text-muted);">{{ p.created_at|date:"Y-m-d H:i" }}</small>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 6px;">
+                            {% if p.badge_image %}
+                                <button type="button" class="btn btn-outline btn-sm" onclick="previewBadgeModal('{{ p.badge_image.url }}', '{{ p.full_name }}', '{{ p.registration_code }}')">
+                                    <i class="fa-solid fa-eye" style="color: var(--primary-gold);"></i>
+                                    البطاقة
+                                </button>
+                            {% endif %}
+                            <a href="{% url 'participant_detail' p.registration_code %}" target="_blank" class="btn btn-outline btn-sm">
+                                <i class="fa-solid fa-qrcode"></i>
+                                صفحة QR
+                            </a>
+                            <button type="button" class="btn btn-outline btn-sm" style="color: var(--danger-red); border-color: #FCA5A5;" onclick="deleteParticipant({{ p.id }}, '{{ p.full_name }}')">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <i class="fa-solid fa-folder-open" style="font-size: 40px; margin-bottom: 12px; display: block; color: #CBD5E1;"></i>
+                        لا توجد مشاركات مسجلة في النظام حالياً.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Badge View Modal -->
+<div class="modal-overlay" id="badgeModal">
+    <div class="modal-container" style="text-align: center; max-width: 480px;">
+        <h3 id="modalNameTitle" style="margin-bottom: 12px; font-size: 18px; font-weight: 800; color: var(--dark-navy);"></h3>
+        <div style="margin-bottom: 20px;">
+            <img id="modalBadgeImg" src="" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button type="button" class="btn btn-outline" onclick="closeBadgeModal()">إغلاق</button>
+            <a id="modalDownloadBtn" href="" download class="btn btn-primary">
+                <i class="fa-solid fa-download"></i> تحميل صورة البطاقة
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function previewBadgeModal(url, name, code) {
+        document.getElementById('modalNameTitle').textContent = `بطاقة المشاركة: ${name} (${code})`;
+        document.getElementById('modalBadgeImg').src = url;
+        document.getElementById('modalDownloadBtn').href = url;
+        document.getElementById('modalBadgeImg').download = `EBadge_${code}.png`;
+        document.getElementById('badgeModal').classList.add('active');
+    }
+
+    function closeBadgeModal() {
+        document.getElementById('badgeModal').classList.remove('active');
+    }
+
+    async function deleteParticipant(id, name) {
+        if (confirm(`هل أنتِ متأكدة من حذف مشاركة "${name}"؟`)) {
+            try {
+                const resp = await fetch(`/api/participant/${id}/delete/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                });
+                const res = await resp.json();
+                if (res.success) {
+                    const row = document.getElementById(`row-${id}`);
+                    if (row) row.remove();
+                } else {
+                    alert('خطأ في الحذف: ' + res.error);
+                }
+            } catch (err) {
+                alert('فشل الحذف: ' + err.message);
+            }
+        }
+    }
+</script>
+{% endblock %}

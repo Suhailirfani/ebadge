@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}منصة بطاقات حفل التخرج 2026 - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}</title>
+    
+    <!-- Google Fonts Arabic (Cairo & Amiri) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons & CropperJS & QRCodeJS & HTML5-QRCode -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    
+    <!-- Main Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-logo">
+                <div class="logo-badge-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-sub">UMMU HABEEBA VIRTUAL CAMPUS</span>
+                    <h1 class="brand-title">منصة البطاقات الإلكترونية</h1>
+                </div>
+            </div>
+
+            <nav class="app-nav">
+                <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>إنشاء البطاقة</span>
+                </a>
+                <a href="{% url 'data_table' %}" class="nav-link {% if request.resolver_match.url_name == 'data_table' %}active{% endif %}">
+                    <i class="fa-solid fa-table-list"></i>
+                    <span>جدول المشاركات</span>
+                </a>
+                <a href="{% url 'scanner' %}" class="nav-link {% if request.resolver_match.url_name == 'scanner' %}active{% endif %}">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>ماسح QR للتحقق</span>
+                </a>
+                <a href="/admin/" target="_blank" class="nav-link admin-link">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>الإدارة</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="app-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>جميع الحقوق محفوظة &copy; 2026 <strong>UMMU HABEEBA VIRTUAL CAMPUS</strong> - حفل تخرج حبيبة ٢٠٢٦ (كاليكوت)</p>
+        </div>
+    </footer>
+
+    <!-- Global JS Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
