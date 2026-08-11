@@ -163,26 +163,7 @@
 
         // Initialize QR Code for demo/live preview
         function updateQRCode(codeText) {
-            const qrDiv = document.getElementById('hiddenQrDiv');
-            qrDiv.innerHTML = '';
-            new QRCode(qrDiv, {
-                text: codeText,
-                width: 250,
-                height: 250,
-                correctLevel: QRCode.CorrectLevel.H
-            });
-
-            setTimeout(() => {
-                const qrImgElem = qrDiv.querySelector('img');
-                if (qrImgElem) {
-                    const img = new Image();
-                    img.onload = () => {
-                        activeQrImg = img;
-                        engine.setQRCode(img);
-                    };
-                    img.src = qrImgElem.src;
-                }
-            }, 100);
+            engine.setQRCodeText(codeText);
         }
 
         updateQRCode(registeredCode);

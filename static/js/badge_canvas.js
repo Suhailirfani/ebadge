@@ -30,6 +30,9 @@ class BadgeCanvasEngine {
 
         this.fontsLoaded = false;
         this.loadFonts();
+        
+        // Auto-generate initial QR Code
+        this.setQRCodeText('UHV-DEMO2026');
     }
 
     async loadFonts() {
@@ -70,6 +73,60 @@ class BadgeCanvasEngine {
     setQRCode(imageElement) {
         this.data.qrCodeImg = imageElement;
         this.render();
+    }
+
+    setQRCodeText(codeText) {
+        if (!codeText) return;
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.left = '-9999px';
+        tempDiv.style.top = '-9999px';
+        tempDiv.style.visibility = 'hidden';
+        document.body.appendChild(tempDiv);
+
+        if (window.QRCode) {
+            try {
+                new window.QRCode(tempDiv, {
+                    text: codeText,
+                    width: 300,
+                    height: 300,
+                    correctLevel: window.QRCode.CorrectLevel.H
+                });
+
+                const checkAndSet = () => {
+                    const canvasElem = tempDiv.querySelector('canvas');
+                    const imgElem = tempDiv.querySelector('img');
+                    let src = '';
+
+                    if (canvasElem) {
+                        try { src = canvasElem.toDataURL('image/png'); } catch (e) {}
+                    }
+                    if (!src && imgElem && imgElem.src && imgElem.src.length > 50) {
+                        src = imgElem.src;
+                    }
+
+                    if (src) {
+                        const img = new Image();
+                        img.onload = () => {
+                            this.setQRCode(img);
+                            if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+                        };
+                        img.src = src;
+                    } else {
+                        setTimeout(checkAndSet, 50);
+                    }
+                };
+
+                setTimeout(checkAndSet, 50);
+            } catch (err) {
+                console.error('Error in QRCode generation:', err);
+                if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+            }
+        } else {
+            console.warn('QRCode library not ready yet');
+            if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+        }
     }
 
     render() {
@@ -141,15 +198,12 @@ class BadgeCanvasEngine {
         });
 
         // --- B. Book & Pen Icon Watermarks ---
-        // Top Center Subtle Open Book & Quill Pen Watermark
         ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
         ctx.font = '900 240px Cairo';
         ctx.textAlign = 'center';
         
-        // Large Open Book Symbol behind upper section
         ctx.fillText('📖', w / 2, 540);
 
-        // Large Pen / Quill Symbol behind lower section
         ctx.font = '900 220px Cairo';
         ctx.fillStyle = 'rgba(212, 175, 55, 0.035)';
         ctx.fillText('✒️', w / 2 + 180, 1380);
@@ -160,12 +214,10 @@ class BadgeCanvasEngine {
     drawGlassCard(ctx, x, y, width, height) {
         ctx.save();
 
-        // Card Drop Shadow
         ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
         ctx.shadowBlur = 30;
         ctx.shadowOffsetY = 15;
 
-        // Glassmorphism Card Fill (Translucent Dark Navy)
         ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
         ctx.beginPath();
         ctx.roundRect(x, y, width, height, 36);
@@ -173,7 +225,6 @@ class BadgeCanvasEngine {
 
         ctx.shadowColor = 'transparent';
 
-        // Soft Gold Frosted Border
         ctx.lineWidth = 2.5;
         const goldBorderGrad = ctx.createLinearGradient(x, y, x + width, y + height);
         goldBorderGrad.addColorStop(0, 'rgba(212, 175, 55, 0.6)');
@@ -189,7 +240,6 @@ class BadgeCanvasEngine {
         ctx.save();
         ctx.textAlign = 'center';
 
-        // Institution Logo Icon Badge
         ctx.fillStyle = 'rgba(212, 175, 55, 0.15)';
         ctx.strokeStyle = '#D4AF37';
         ctx.lineWidth = 2;
@@ -202,18 +252,15 @@ class BadgeCanvasEngine {
         ctx.font = 'bold 36px Cairo';
         ctx.fillText('🎓', w / 2, startY + 12);
 
-        // Institution Name
         ctx.fillStyle = '#D4AF37';
         ctx.font = '800 28px Cairo';
         ctx.fillText('UMMU HABEEBA VIRTUAL CAMPUS', w / 2, startY + 75);
 
-        // Event Title: حفل تخرج حبيبة ٢٠٢٦
         ctx.fillStyle = '#FFFFFF';
         ctx.font = '900 52px Cairo';
         const yearArabic = this.toArabicDigits('2026');
         ctx.fillText(`حفل تَخرّج حبيبة ${yearArabic}`, w / 2, startY + 145);
 
-        // Date & Location Subtitle
         ctx.fillStyle = '#94A3B8';
         ctx.font = '700 32px Cairo';
         const dateArabic = this.toArabicDigits('16');
@@ -225,7 +272,6 @@ class BadgeCanvasEngine {
     drawCircularAvatar(ctx, cx, cy, radius) {
         ctx.save();
 
-        // Outer Soft Gold Ring with Glow
         ctx.shadowColor = 'rgba(212, 175, 55, 0.4)';
         ctx.shadowBlur = 24;
 
@@ -244,7 +290,6 @@ class BadgeCanvasEngine {
 
         ctx.shadowColor = 'transparent';
 
-        // Inner Circle Clip Mask
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.clip();
@@ -260,7 +305,6 @@ class BadgeCanvasEngine {
             }
             ctx.drawImage(img, cx - drawW / 2, cy - drawH / 2, drawW, drawH);
         } else {
-            // Default Smooth Portrait Avatar Background
             const bgGrad = ctx.createLinearGradient(cx, cy - radius, cx, cy + radius);
             bgGrad.addColorStop(0, '#1E293B');
             bgGrad.addColorStop(1, '#0F172A');
@@ -280,12 +324,10 @@ class BadgeCanvasEngine {
         ctx.save();
         ctx.textAlign = 'center';
 
-        // Student Full Name
         ctx.fillStyle = '#FFFFFF';
         ctx.font = '900 58px Cairo';
         ctx.fillText(this.data.fullName || 'الاسم الكامل', w / 2, startY);
 
-        // Status Pill Badge (e.g. متعلّمة / خريجة)
         const roleText = this.data.role || 'متعلّمة';
         ctx.font = '700 32px Cairo';
         const textMetrics = ctx.measureText(roleText);
@@ -294,18 +336,15 @@ class BadgeCanvasEngine {
         const pillX = w / 2 - pillW / 2;
         const pillY = startY + 25;
 
-        // Rounded Translucent Pill Fill
         ctx.fillStyle = 'rgba(212, 175, 55, 0.12)';
         ctx.beginPath();
         ctx.roundRect(pillX, pillY, pillW, pillH, 32);
         ctx.fill();
 
-        // Soft Gold Border
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#D4AF37';
         ctx.stroke();
 
-        // Soft Gold Pill Text
         ctx.fillStyle = '#F3E5AB';
         ctx.fillText(roleText, w / 2, pillY + 44);
 
@@ -329,7 +368,6 @@ class BadgeCanvasEngine {
         items.forEach((item, idx) => {
             const currentY = startY + (idx * rowHeight);
 
-            // Row Container Line Separator
             if (idx > 0) {
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
                 ctx.lineWidth = 1;
@@ -339,13 +377,11 @@ class BadgeCanvasEngine {
                 ctx.stroke();
             }
 
-            // Label on Right (Soft Muted Text)
             ctx.textAlign = 'right';
             ctx.font = '800 36px Cairo';
             ctx.fillStyle = '#94A3B8';
             ctx.fillText(item.label, cardRight - 20, currentY + 20);
 
-            // Value on Left (Crisp White Text)
             ctx.textAlign = 'left';
             ctx.font = '700 36px Cairo';
             ctx.fillStyle = '#FFFFFF';
@@ -359,7 +395,6 @@ class BadgeCanvasEngine {
     drawBottomQRCode(ctx, x, y, size) {
         ctx.save();
 
-        // QR Background Container (Sharp Square with Soft Gold Accent Border)
         ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
         ctx.roundRect(x, y, size, size, 20);
@@ -370,7 +405,7 @@ class BadgeCanvasEngine {
         ctx.stroke();
 
         if (this.data.qrCodeImg) {
-            ctx.drawImage(this.data.qrCodeImg, x + 16, y + 16, size - 32, size - 32);
+            ctx.drawImage(this.data.qrCodeImg, x + 14, y + 14, size - 28, size - 28);
         } else {
             ctx.fillStyle = '#0F172A';
             ctx.font = 'bold 22px Cairo';
