@@ -1,6 +1,6 @@
 /**
- * E-Badge Canvas Rendering Engine (Minimalist Sleek Digital ID Edition)
- * Dark Navy & Soft Gold Palette | Smooth Circular Avatar | Glassmorphism Grid
+ * E-Badge Canvas Rendering Engine (Minimalist Sleek Digital ID with Watermarks)
+ * Dark Navy & Soft Gold Palette | Smooth Circular Avatar | Book & Pen & Arabic Calligraphy Watermarks
  * UMMU HABEEBA VIRTUAL CAMPUS - Graduation 2026
  */
 
@@ -87,30 +87,74 @@ class BadgeCanvasEngine {
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Soft Radial Gold Ambient Glow behind Avatar
+        // Soft Radial Gold Ambient Glow
         const ambientGlow = ctx.createRadialGradient(w / 2, 580, 50, w / 2, 580, 450);
         ambientGlow.addColorStop(0, 'rgba(212, 175, 55, 0.18)');
         ambientGlow.addColorStop(1, 'rgba(15, 23, 42, 0)');
         ctx.fillStyle = ambientGlow;
         ctx.fillRect(0, 0, w, h);
 
-        // 2. Frosted Glassmorphism Main Card Container
+        // 2. Subtle Watermarks: Book, Pen & Arabic Calligraphy Letters
+        this.drawWatermarks(ctx, w, h);
+
+        // 3. Frosted Glassmorphism Main Card Container
         this.drawGlassCard(ctx, 80, 80, w - 160, h - 160);
 
-        // 3. Top Section: Institution Logo & Crisp Arabic Header
+        // 4. Top Section: Institution Logo & Crisp Arabic Header
         this.drawTopInstitutionHeader(ctx, w, 150);
 
-        // 4. Smooth Circular Avatar Portrait Frame
+        // 5. Smooth Circular Avatar Portrait Frame
         this.drawCircularAvatar(ctx, w / 2, 600, 210);
 
-        // 5. Participant Name & Status Pill Badge
+        // 6. Participant Name & Status Pill Badge
         this.drawIdentitySection(ctx, w, 880);
 
-        // 6. Aligned Key-Value Metadata Grid
+        // 7. Aligned Key-Value Metadata Grid
         this.drawMetadataGrid(ctx, w, 1120);
 
-        // 7. Integrated Bottom Corner Square QR Code
+        // 8. Integrated Bottom Corner Square QR Code
         this.drawBottomQRCode(ctx, 150, h - 420, 250);
+    }
+
+    drawWatermarks(ctx, w, h) {
+        ctx.save();
+
+        // --- A. Subtle Arabic Calligraphy Letters Watermark ---
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.04)';
+        ctx.font = '700 160px Amiri';
+
+        const arabicLetters = [
+            { text: 'اقْرَأْ', x: 180, y: 350, rot: -0.15 },
+            { text: 'ن وَالْقَلَمِ', x: w - 240, y: 480, rot: 0.12 },
+            { text: 'عِلْم', x: 220, y: 1020, rot: 0.2 },
+            { text: 'حِكْمَة', x: w - 260, y: 1150, rot: -0.18 },
+            { text: 'ن', x: 140, y: 1550, rot: 0.1 },
+            { text: 'ق', x: w - 180, y: 1650, rot: -0.15 },
+        ];
+
+        arabicLetters.forEach(item => {
+            ctx.save();
+            ctx.translate(item.x, item.y);
+            ctx.rotate(item.rot);
+            ctx.fillText(item.text, 0, 0);
+            ctx.restore();
+        });
+
+        // --- B. Book & Pen Icon Watermarks ---
+        // Top Center Subtle Open Book & Quill Pen Watermark
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+        ctx.font = '900 240px Cairo';
+        ctx.textAlign = 'center';
+        
+        // Large Open Book Symbol behind upper section
+        ctx.fillText('📖', w / 2, 540);
+
+        // Large Pen / Quill Symbol behind lower section
+        ctx.font = '900 220px Cairo';
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.035)';
+        ctx.fillText('✒️', w / 2 + 180, 1380);
+
+        ctx.restore();
     }
 
     drawGlassCard(ctx, x, y, width, height) {
@@ -236,7 +280,7 @@ class BadgeCanvasEngine {
         ctx.save();
         ctx.textAlign = 'center';
 
-        // Student Full Name (Crisp Bold Typography)
+        // Student Full Name
         ctx.fillStyle = '#FFFFFF';
         ctx.font = '900 58px Cairo';
         ctx.fillText(this.data.fullName || 'الاسم الكامل', w / 2, startY);
@@ -301,7 +345,7 @@ class BadgeCanvasEngine {
             ctx.fillStyle = '#94A3B8';
             ctx.fillText(item.label, cardRight - 20, currentY + 20);
 
-            // Value on Left (Crisp White/Gold Text)
+            // Value on Left (Crisp White Text)
             ctx.textAlign = 'left';
             ctx.font = '700 36px Cairo';
             ctx.fillStyle = '#FFFFFF';
