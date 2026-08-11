@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.base import ContentFile
+from django.db import models
 from .models import Participant
 
 def index_view(request):
@@ -70,7 +71,7 @@ def register_participant_api(request):
             course = request.POST.get('course', '').strip()
             
             if not full_name:
-                return JsonResponse({'success': False, 'error': 'الاسم الكامل مطلوب.'}, status=400)
+                return JsonResponse({'success': False, 'error': 'Full Name is required.'}, status=400)
             
             participant = Participant.objects.create(
                 full_name=full_name,
@@ -105,9 +106,9 @@ def register_participant_api(request):
                 'verify_url': request.build_absolute_uri(f"/verify/{participant.registration_code}/")
             })
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+            return JsonResponse({'success': False, 'error': f"Failed to register participant: {str(e)}"}, status=500)
             
-    return JsonResponse({'success': False, 'error': 'طلب غير مسموح'}, status=405)
+    return JsonResponse({'success': False, 'error': 'Method not allowed.'}, status=405)
 
 @csrf_exempt
 def verify_qr_api(request):
@@ -123,7 +124,7 @@ def verify_qr_api(request):
                 
             participant = Participant.objects.filter(registration_code=code).first()
             if not participant:
-                return JsonResponse({'success': False, 'error': 'رمز التسجيل غير صحيح أو غير موجود!'}, status=404)
+                return JsonResponse({'success': False, 'error': 'Registration Code is invalid or does not exist.'}, status=404)
             
             # Mark as verified
             participant.is_verified = True
@@ -132,6 +133,7 @@ def verify_qr_api(request):
             
             return JsonResponse({
                 'success': True,
+                'message': 'Participant verified successfully.',
                 'participant': {
                     'code': participant.registration_code,
                     'full_name': participant.full_name,
@@ -146,9 +148,9 @@ def verify_qr_api(request):
                 }
             })
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+            return JsonResponse({'success': False, 'error': f"Verification error: {str(e)}"}, status=500)
             
-    return JsonResponse({'success': False, 'error': 'طلب غير مسموح'}, status=405)
+    return JsonResponse({'success': False, 'error': 'Method not allowed.'}, status=405)
 
 def export_csv_view(request):
     """Export participants list to UTF-8 Arabic CSV"""
@@ -158,7 +160,7 @@ def export_csv_view(request):
     # Write BOM for Arabic UTF-8 Excel support
     response.write('\ufeff')
     writer = csv.writer(response)
-    writer.writerow(['رمز التسجيل', 'الاسم الكامل', 'الصفة', 'الدفعة', 'السنة', 'الصف', 'الدورة', 'حالة التحقق', 'تاريخ التسجيل'])
+    writer.writerow(['Reg. Code', 'Full Name', 'Role', 'Batch', 'Year', 'Class Grade', 'Course', 'Check-in Status', 'Date Registered'])
     
     for p in Participant.objects.all():
         writer.writerow([
@@ -169,7 +171,7 @@ def export_csv_view(request):
             p.year,
             p.class_name,
             p.course,
-            'تم الحضور' if p.is_verified else 'لم يتم الحضور',
+            'Verified' if p.is_verified else 'Pending',
             p.created_at.strftime('%Y-%m-%d %H:%M')
         ])
     return response
@@ -180,5 +182,5 @@ def delete_participant_api(request, pk):
     if request.method in ['POST', 'DELETE']:
         participant = get_object_or_404(Participant, pk=pk)
         participant.delete()
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False, 'error': 'طلب غير مسموح'}, status=405)
+        return JsonResponse({'success': True, 'message': 'Participant deleted successfully.'})
+    return JsonResponse({'success': False, 'error': 'Method not allowed.'}, status=405)

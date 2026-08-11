@@ -12,26 +12,26 @@ class Participant(models.Model):
         max_length=20, 
         unique=True, 
         default=generate_unique_code,
-        verbose_name="رمز التسجيل"
+        verbose_name="Registration Code"
     )
-    full_name = models.CharField(max_length=150, verbose_name="الاسم الكامل")
-    role = models.CharField(max_length=50, default="متعلّمة", verbose_name="الصفة")
-    batch = models.CharField(max_length=100, blank=True, verbose_name="الدفعة")
-    year = models.CharField(max_length=20, default="٢٠٢٦", verbose_name="السنة")
-    class_name = models.CharField(max_length=100, blank=True, verbose_name="الصف")
-    course = models.CharField(max_length=150, blank=True, verbose_name="الدورة")
+    full_name = models.CharField(max_length=150, verbose_name="Full Name")
+    role = models.CharField(max_length=50, default="متعلّمة", verbose_name="Role / Tag")
+    batch = models.CharField(max_length=100, blank=True, verbose_name="Batch")
+    year = models.CharField(max_length=20, default="٢٠٢٦", verbose_name="Year")
+    class_name = models.CharField(max_length=100, blank=True, verbose_name="Class Grade")
+    course = models.CharField(max_length=150, blank=True, verbose_name="Course")
     
-    photo = models.ImageField(upload_to="participant_photos/", blank=True, null=True, verbose_name="الصورة الشخصية")
-    badge_image = models.ImageField(upload_to="badges/", blank=True, null=True, verbose_name="صورة البطاقة")
-    qr_code_image = models.ImageField(upload_to="qr_codes/", blank=True, null=True, verbose_name="رمز QR")
+    photo = models.ImageField(upload_to="participant_photos/", blank=True, null=True, verbose_name="Profile Photo")
+    badge_image = models.ImageField(upload_to="badges/", blank=True, null=True, verbose_name="Badge Image")
+    qr_code_image = models.ImageField(upload_to="qr_codes/", blank=True, null=True, verbose_name="QR Code Image")
     
-    is_verified = models.BooleanField(default=False, verbose_name="تم الحضور / التحقق")
-    verified_at = models.DateTimeField(blank=True, null=True, verbose_name="وقت التحقق")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ التسجيل")
+    is_verified = models.BooleanField(default=False, verbose_name="Attendance Verified")
+    verified_at = models.DateTimeField(blank=True, null=True, verbose_name="Verification Timestamp")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Registration Date")
 
     class Meta:
-        verbose_name = "مشاركة"
-        verbose_name_plural = "المشاركات"
+        verbose_name = "Participant"
+        verbose_name_plural = "Participants"
         ordering = ['-created_at']
 
     def __str__(self):
@@ -43,24 +43,28 @@ class Participant(models.Model):
         
         super().save(*args, **kwargs)
         
+        # Generate QR Code image if missing
         if not self.qr_code_image:
             self.generate_qr_code()
 
     def generate_qr_code(self):
-        qr_data = self.registration_code
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_H,
-            box_size=10,
-            border=2,
-        )
-        qr.add_data(qr_data)
-        qr.make(fit=True)
+        try:
+            qr_data = self.registration_code
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
+                box_size=10,
+                border=2,
+            )
+            qr.add_data(qr_data)
+            qr.make(fit=True)
 
-        img = qr.make_image(fill_color="black", back_color="white")
-        buffer = BytesIO()
-        img.save(buffer, format="PNG")
-        
-        file_name = f"qr_{self.registration_code}.png"
-        self.qr_code_image.save(file_name, ContentFile(buffer.getvalue()), save=False)
-        super().save(update_fields=['qr_code_image'])
+            img = qr.make_image(fill_color="black", back_color="white")
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            
+            file_name = f"qr_{self.registration_code}.png"
+            self.qr_code_image.save(file_name, ContentFile(buffer.getvalue()), save=False)
+            super().save(update_fields=['qr_code_image'])
+        except Exception as e:
+            print(f"Error generating QR code in model: {e}")

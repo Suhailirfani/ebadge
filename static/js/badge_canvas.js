@@ -78,6 +78,12 @@ class BadgeCanvasEngine {
     setQRCodeText(codeText) {
         if (!codeText) return;
         
+        // If QRCode library is not loaded yet, retry automatically
+        if (!window.QRCode) {
+            setTimeout(() => this.setQRCodeText(codeText), 100);
+            return;
+        }
+
         const tempDiv = document.createElement('div');
         tempDiv.style.position = 'absolute';
         tempDiv.style.left = '-9999px';
@@ -85,46 +91,41 @@ class BadgeCanvasEngine {
         tempDiv.style.visibility = 'hidden';
         document.body.appendChild(tempDiv);
 
-        if (window.QRCode) {
-            try {
-                new window.QRCode(tempDiv, {
-                    text: codeText,
-                    width: 300,
-                    height: 300,
-                    correctLevel: window.QRCode.CorrectLevel.H
-                });
+        try {
+            new window.QRCode(tempDiv, {
+                text: codeText,
+                width: 300,
+                height: 300,
+                correctLevel: window.QRCode.CorrectLevel.H
+            });
 
-                const checkAndSet = () => {
-                    const canvasElem = tempDiv.querySelector('canvas');
-                    const imgElem = tempDiv.querySelector('img');
-                    let src = '';
+            const checkAndSet = () => {
+                const canvasElem = tempDiv.querySelector('canvas');
+                const imgElem = tempDiv.querySelector('img');
+                let src = '';
 
-                    if (canvasElem) {
-                        try { src = canvasElem.toDataURL('image/png'); } catch (e) {}
-                    }
-                    if (!src && imgElem && imgElem.src && imgElem.src.length > 50) {
-                        src = imgElem.src;
-                    }
+                if (canvasElem) {
+                    try { src = canvasElem.toDataURL('image/png'); } catch (e) {}
+                }
+                if (!src && imgElem && imgElem.src && imgElem.src.length > 50) {
+                    src = imgElem.src;
+                }
 
-                    if (src) {
-                        const img = new Image();
-                        img.onload = () => {
-                            this.setQRCode(img);
-                            if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
-                        };
-                        img.src = src;
-                    } else {
-                        setTimeout(checkAndSet, 50);
-                    }
-                };
+                if (src) {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.setQRCode(img);
+                        if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+                    };
+                    img.src = src;
+                } else {
+                    setTimeout(checkAndSet, 50);
+                }
+            };
 
-                setTimeout(checkAndSet, 50);
-            } catch (err) {
-                console.error('Error in QRCode generation:', err);
-                if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
-            }
-        } else {
-            console.warn('QRCode library not ready yet');
+            setTimeout(checkAndSet, 50);
+        } catch (err) {
+            console.error('Error generating QR Code:', err);
             if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
         }
     }
