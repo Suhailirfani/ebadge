@@ -1,3 +1,4 @@
+import re
 import csv
 import json
 import base64
@@ -55,12 +56,15 @@ def scanner_view(request):
 
 def participant_detail_view(request, code):
     """Public verification page when QR code is scanned"""
-    participant = get_object_or_404(Participant, registration_code=code)
+    # Robust matching for case or demo code
+    participant = Participant.objects.filter(registration_code__iexact=code.strip()).first()
+    if not participant:
+        participant = get_object_or_404(Participant, registration_code=code)
     return render(request, 'badge_app/verify_detail.html', {'participant': participant})
 
 @csrf_exempt
 def register_participant_api(request):
-    """API endpoint to create a new participant and store images"""
+    """API endpoint to create or update a participant and store images"""
     if request.method == 'POST':
         try:
             full_name = request.POST.get('full_name', '').strip()
@@ -69,18 +73,32 @@ def register_participant_api(request):
             year = request.POST.get('year', '٢٠٢٦').strip()
             class_name = request.POST.get('class_name', '').strip()
             course = request.POST.get('course', '').strip()
+            existing_code = request.POST.get('registration_code', '').strip()
             
             if not full_name:
                 return JsonResponse({'success': False, 'error': 'Full Name is required.'}, status=400)
             
-            participant = Participant.objects.create(
-                full_name=full_name,
-                role=role,
-                batch=batch,
-                year=year,
-                class_name=class_name,
-                course=course,
-            )
+            if existing_code:
+                participant = Participant.objects.filter(registration_code=existing_code).first()
+            else:
+                participant = None
+
+            if not participant:
+                participant = Participant.objects.create(
+                    full_name=full_name,
+                    role=role,
+                    batch=batch,
+                    year=year,
+                    class_name=class_name,
+                    course=course,
+                )
+            else:
+                participant.full_name = full_name
+                participant.role = role
+                participant.batch = batch
+                participant.year = year
+                participant.class_name = class_name
+                participant.course = course
             
             # Save uploaded/cropped photo if provided
             if 'photo' in request.FILES:
@@ -116,15 +134,19 @@ def verify_qr_api(request):
     if request.method == 'POST':
         try:
             body = json.loads(request.body)
-            code = body.get('code', '').strip().upper()
+            raw_code = body.get('code', '').strip()
             
-            # Allow full URL or raw registration code
-            if '/verify/' in code:
-                code = code.rstrip('/').split('/verify/')[-1].upper()
+            # Extract UHV-XXXXXX pattern from any scanned string or URL
+            match = re.search(r'UHV-[A-Z0-9]{4,10}', raw_code, re.IGNORECASE)
+            if match:
+                code = match.group(0).upper()
+            else:
+                code = raw_code.upper()
                 
-            participant = Participant.objects.filter(registration_code=code).first()
+            participant = Participant.objects.filter(registration_code__iexact=code).first()
+
             if not participant:
-                return JsonResponse({'success': False, 'error': 'Registration Code is invalid or does not exist.'}, status=404)
+                return JsonResponse({'success': False, 'error': f'Registration Code "{code}" is invalid or not registered in the database.'}, status=404)
             
             # Mark as verified
             participant.is_verified = True
@@ -157,7 +179,6 @@ def export_csv_view(request):
     response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
     response['Content-Disposition'] = 'attachment; filename="participants_list.csv"'
     
-    # Write BOM for Arabic UTF-8 Excel support
     response.write('\ufeff')
     writer = csv.writer(response)
     writer.writerow(['Reg. Code', 'Full Name', 'Role', 'Batch', 'Year', 'Class Grade', 'Course', 'Check-in Status', 'Date Registered'])

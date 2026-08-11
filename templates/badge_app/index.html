@@ -255,15 +255,12 @@
         badgeForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Set current base64 badge image
-            badgeB64Input.value = engine.getCanvasDataURL('image/png');
-
-            const formData = new FormData(badgeForm);
             const saveBtn = document.getElementById('saveParticipantBtn');
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving & Generating...';
 
             try {
+                const formData = new FormData(badgeForm);
                 const resp = await fetch('{% url "api_register" %}', {
                     method: 'POST',
                     body: formData
@@ -275,6 +272,28 @@
                     updateQRCode(result.registration_code);
                     savedCodeSpan.textContent = result.registration_code;
                     registrationStatusBanner.style.display = 'block';
+
+                    // Update server badge image with final rendered QR code
+                    setTimeout(async () => {
+                        try {
+                            const syncForm = new FormData();
+                            syncForm.append('registration_code', result.registration_code);
+                            syncForm.append('full_name', nameInput.value);
+                            syncForm.append('role', roleSelect.value);
+                            syncForm.append('year', yearInput.value);
+                            syncForm.append('batch', batchInput.value);
+                            syncForm.append('class_name', classInput.value);
+                            syncForm.append('course', courseInput.value);
+                            syncForm.append('badge_b64', engine.getCanvasDataURL('image/png'));
+
+                            await fetch('{% url "api_register" %}', {
+                                method: 'POST',
+                                body: syncForm
+                            });
+                        } catch (err) {
+                            console.warn('Background badge sync warning:', err);
+                        }
+                    }, 200);
 
                     alert(`Participant registered successfully! Registration Code: ${result.registration_code}`);
                 } else {
