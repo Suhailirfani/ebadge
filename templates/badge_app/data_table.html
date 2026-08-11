@@ -1,21 +1,21 @@
 {% extends 'badge_app/base.html' %}
 {% load static %}
 
-{% block title %}جدول بيانات المشاركات والبطاقات - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}
+{% block title %}Participants Directory - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}
 
 {% block content %}
-<div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
     <div>
         <h2 class="page-title">
             <i class="fa-solid fa-table-list" style="color: var(--primary-gold);"></i>
-            جدول بيانات المشاركات والتسجيلات
+            Participants Registration Directory
         </h2>
-        <p class="page-subtitle">استعراض وحفظ السجلات المكتملة، وتتبع حضور المشاركات عبر رمز QR.</p>
+        <p class="page-subtitle">View, search, and manage registered participants and track venue attendance via QR code verification.</p>
     </div>
     <div>
         <a href="{% url 'export_csv' %}" class="btn btn-success">
             <i class="fa-solid fa-file-excel"></i>
-            تصدير إلى قائمة CSV (إكسل)
+            Export to Excel CSV
         </a>
     </div>
 </div>
@@ -28,7 +28,7 @@
         </div>
         <div>
             <div class="stat-number">{{ total_count }}</div>
-            <div class="stat-label">إجمالي المسجلات</div>
+            <div class="stat-label">Total Registered</div>
         </div>
     </div>
 
@@ -38,7 +38,7 @@
         </div>
         <div>
             <div class="stat-number">{{ verified_count }}</div>
-            <div class="stat-label">تم التأكيد والحضور</div>
+            <div class="stat-label">Verified Attendance</div>
         </div>
     </div>
 
@@ -48,7 +48,7 @@
         </div>
         <div>
             <div class="stat-number">{{ unverified_count }}</div>
-            <div class="stat-label">في انتظار الحضور</div>
+            <div class="stat-label">Pending Verification</div>
         </div>
     </div>
 </div>
@@ -57,40 +57,40 @@
 <form method="GET" class="filter-bar">
     <div class="search-field">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" name="q" value="{{ query }}" placeholder="البحث برمز التسجيل، الاسم الكامل، الصف أو الدورة...">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by Reg Code, Name, Class, Course...">
     </div>
 
     <select name="batch" class="form-select" style="width: auto; min-width: 180px;" onchange="this.form.submit()">
-        <option value="">جميع الدفعات</option>
+        <option value="">All Batches</option>
         {% for b in batches %}
             <option value="{{ b }}" {% if batch_filter == b %}selected{% endif %}>{{ b }}</option>
         {% endfor %}
     </select>
 
     <select name="status" class="form-select" style="width: auto; min-width: 180px;" onchange="this.form.submit()">
-        <option value="">جميع الحالات</option>
-        <option value="verified" {% if status_filter == 'verified' %}selected{% endif %}>تم الحضور</option>
-        <option value="unverified" {% if status_filter == 'unverified' %}selected{% endif %}>لم يتم الحضور</option>
+        <option value="">All Statuses</option>
+        <option value="verified" {% if status_filter == 'verified' %}selected{% endif %}>Verified</option>
+        <option value="unverified" {% if status_filter == 'unverified' %}selected{% endif %}>Pending</option>
     </select>
 
     {% if query or batch_filter or status_filter %}
-        <a href="{% url 'data_table' %}" class="btn btn-outline btn-sm">إلغاء التصفية</a>
+        <a href="{% url 'data_table' %}" class="btn btn-outline btn-sm">Clear Filters</a>
     {% endif %}
 </form>
 
 <!-- Data Table -->
 <div class="table-wrapper">
-    <table class="custom-table">
+    <table class="custom-table" style="text-align: left;">
         <thead>
             <tr>
-                <th>رمز التسجيل</th>
-                <th>اسم المشاركة</th>
-                <th>الصفة</th>
-                <th>الدفعة / الصف</th>
-                <th>الدورة</th>
-                <th>حالة التحقق (QR)</th>
-                <th>تاريخ التسجيل</th>
-                <th>الإجراءات والبطاقة</th>
+                <th>Reg. Code</th>
+                <th>Participant Name</th>
+                <th>Role</th>
+                <th>Batch / Class</th>
+                <th>Course</th>
+                <th>QR Check-in Status</th>
+                <th>Date Registered</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -108,29 +108,29 @@
                                     {{ p.full_name|first }}
                                 </div>
                             {% endif %}
-                            <span style="font-weight: 700;">{{ p.full_name }}</span>
+                            <span style="font-weight: 700; font-family: 'Cairo', sans-serif;">{{ p.full_name }}</span>
                         </div>
                     </td>
                     <td>
-                        <span style="background: #EEF2FF; color: var(--dark-navy); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 13px;">
+                        <span style="background: #EEF2FF; color: var(--dark-navy); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 13px;">
                             {{ p.role }}
                         </span>
                     </td>
                     <td>
-                        <div>{{ p.batch|default:"-" }}</div>
-                        <small style="color: var(--text-muted);">{{ p.class_name }}</small>
+                        <div style="font-family: 'Cairo', sans-serif;">{{ p.batch|default:"-" }}</div>
+                        <small style="color: var(--text-muted); font-family: 'Cairo', sans-serif;">{{ p.class_name }}</small>
                     </td>
-                    <td>{{ p.course|default:"-" }}</td>
+                    <td style="font-family: 'Cairo', sans-serif;">{{ p.course|default:"-" }}</td>
                     <td>
                         {% if p.is_verified %}
                             <span class="status-tag verified">
                                 <i class="fa-solid fa-circle-check"></i>
-                                تم التأكيد
+                                Verified
                             </span>
                         {% else %}
                             <span class="status-tag unverified">
                                 <i class="fa-solid fa-clock"></i>
-                                لم يتم التحقق
+                                Pending
                             </span>
                         {% endif %}
                     </td>
@@ -142,12 +142,12 @@
                             {% if p.badge_image %}
                                 <button type="button" class="btn btn-outline btn-sm" onclick="previewBadgeModal('{{ p.badge_image.url }}', '{{ p.full_name }}', '{{ p.registration_code }}')">
                                     <i class="fa-solid fa-eye" style="color: var(--primary-gold);"></i>
-                                    البطاقة
+                                    Badge
                                 </button>
                             {% endif %}
                             <a href="{% url 'participant_detail' p.registration_code %}" target="_blank" class="btn btn-outline btn-sm">
                                 <i class="fa-solid fa-qrcode"></i>
-                                صفحة QR
+                                QR Page
                             </a>
                             <button type="button" class="btn btn-outline btn-sm" style="color: var(--danger-red); border-color: #FCA5A5;" onclick="deleteParticipant({{ p.id }}, '{{ p.full_name }}')">
                                 <i class="fa-solid fa-trash-can"></i>
@@ -159,7 +159,7 @@
                 <tr>
                     <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
                         <i class="fa-solid fa-folder-open" style="font-size: 40px; margin-bottom: 12px; display: block; color: #CBD5E1;"></i>
-                        لا توجد مشاركات مسجلة في النظام حالياً.
+                        No registered participants found in the system.
                     </td>
                 </tr>
             {% endfor %}
@@ -175,9 +175,9 @@
             <img id="modalBadgeImg" src="" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
         </div>
         <div style="display: flex; gap: 12px; justify-content: center;">
-            <button type="button" class="btn btn-outline" onclick="closeBadgeModal()">إغلاق</button>
+            <button type="button" class="btn btn-outline" onclick="closeBadgeModal()">Close</button>
             <a id="modalDownloadBtn" href="" download class="btn btn-primary">
-                <i class="fa-solid fa-download"></i> تحميل صورة البطاقة
+                <i class="fa-solid fa-download"></i> Download Badge Image
             </a>
         </div>
     </div>
@@ -187,7 +187,7 @@
 {% block extra_js %}
 <script>
     function previewBadgeModal(url, name, code) {
-        document.getElementById('modalNameTitle').textContent = `بطاقة المشاركة: ${name} (${code})`;
+        document.getElementById('modalNameTitle').textContent = `Official Badge: ${name} (${code})`;
         document.getElementById('modalBadgeImg').src = url;
         document.getElementById('modalDownloadBtn').href = url;
         document.getElementById('modalBadgeImg').download = `EBadge_${code}.png`;
@@ -199,7 +199,7 @@
     }
 
     async function deleteParticipant(id, name) {
-        if (confirm(`هل أنتِ متأكدة من حذف مشاركة "${name}"؟`)) {
+        if (confirm(`Are you sure you want to delete participant "${name}"?`)) {
             try {
                 const resp = await fetch(`/api/participant/${id}/delete/`, {
                     method: 'POST',
@@ -210,10 +210,10 @@
                     const row = document.getElementById(`row-${id}`);
                     if (row) row.remove();
                 } else {
-                    alert('خطأ في الحذف: ' + res.error);
+                    alert('Delete failed: ' + res.error);
                 }
             } catch (err) {
-                alert('فشل الحذف: ' + err.message);
+                alert('Error: ' + err.message);
             }
         }
     }

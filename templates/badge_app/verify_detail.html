@@ -1,10 +1,10 @@
 {% extends 'badge_app/base.html' %}
 {% load static %}
 
-{% block title %}التحقق من صحة البطاقة - {{ participant.full_name }} - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}
+{% block title %}Badge Verification - {{ participant.full_name }} - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}
 
 {% block content %}
-<div style="max-width: 500px; margin: 20px auto; text-align: center;">
+<div style="max-width: 520px; margin: 20px auto; text-align: center;">
 
     <!-- Verification Card Container -->
     <div class="card-box" style="border: 2px solid var(--primary-gold); padding: 32px 24px;">
@@ -15,14 +15,14 @@
         </div>
 
         <span class="status-tag verified" style="font-size: 14px; padding: 6px 18px; margin-bottom: 16px;">
-            بطاقة موثوقة ومعتمدة
+            Verified Official E-Badge
         </span>
 
-        <h2 style="font-size: 24px; font-weight: 800; color: var(--dark-navy); margin-top: 12px; margin-bottom: 4px;">
+        <h2 style="font-size: 26px; font-weight: 800; color: var(--dark-navy); margin-top: 12px; margin-bottom: 4px; font-family: 'Cairo', sans-serif;">
             {{ participant.full_name }}
         </h2>
-        <div style="color: var(--primary-gold); font-weight: 700; font-size: 16px; margin-bottom: 20px;">
-            {{ participant.role }} - UMMU HABEEBA VIRTUAL CAMPUS
+        <div style="color: var(--primary-gold); font-weight: 700; font-size: 16px; margin-bottom: 20px; font-family: 'Cairo', sans-serif;">
+            {{ participant.role }} — UMMU HABEEBA VIRTUAL CAMPUS
         </div>
 
         <!-- Participant Photo if available -->
@@ -32,27 +32,27 @@
             </div>
         {% endif %}
 
-        <!-- Detailed Table List -->
-        <div style="background: #F8FAFC; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: right; font-size: 15px; border: 1px solid var(--border-color);">
+        <!-- Detailed Table List (LTR) -->
+        <div style="background: #F8FAFC; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left; font-size: 15px; border: 1px solid var(--border-color);">
             <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E2E8F0;">
-                <span style="color: var(--text-muted);">رمز التسجيل:</span>
+                <span style="color: var(--text-muted);">Registration Code:</span>
                 <strong style="font-family: monospace; color: var(--dark-navy); font-size: 16px;">{{ participant.registration_code }}</strong>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E2E8F0;">
-                <span style="color: var(--text-muted);">الدفعة:</span>
-                <strong>{{ participant.batch|default:"-" }}</strong>
+                <span style="color: var(--text-muted);">Batch:</span>
+                <strong style="font-family: 'Cairo', sans-serif;">{{ participant.batch|default:"-" }}</strong>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E2E8F0;">
-                <span style="color: var(--text-muted);">السنة:</span>
-                <strong>{{ participant.year }}</strong>
+                <span style="color: var(--text-muted);">Year:</span>
+                <strong style="font-family: 'Cairo', sans-serif;">{{ participant.year }}</strong>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E2E8F0;">
-                <span style="color: var(--text-muted);">الصف:</span>
-                <strong>{{ participant.class_name|default:"-" }}</strong>
+                <span style="color: var(--text-muted);">Class Grade:</span>
+                <strong style="font-family: 'Cairo', sans-serif;">{{ participant.class_name|default:"-" }}</strong>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-                <span style="color: var(--text-muted);">الدورة / التخصص:</span>
-                <strong>{{ participant.course|default:"-" }}</strong>
+                <span style="color: var(--text-muted);">Course / Specialization:</span>
+                <strong style="font-family: 'Cairo', sans-serif;">{{ participant.course|default:"-" }}</strong>
             </div>
         </div>
 
@@ -61,11 +61,11 @@
                 <img src="{{ participant.badge_image.url }}" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
             </div>
             <a href="{{ participant.badge_image.url }}" download class="btn btn-primary btn-block">
-                <i class="fa-solid fa-download"></i> تحميل صورة البطاقة الرسمية
+                <i class="fa-solid fa-download"></i> Download Official Badge Image
             </a>
         {% else %}
             <a href="{% url 'index' %}" class="btn btn-dark btn-block">
-                <i class="fa-solid fa-house"></i> العودة للرئيسية
+                <i class="fa-solid fa-house"></i> Return to Homepage
             </a>
         {% endif %}
 

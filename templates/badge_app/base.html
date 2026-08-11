@@ -1,15 +1,15 @@
 {% load static %}
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="ltr" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}منصة بطاقات حفل التخرج 2026 - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}</title>
+    <title>{% block title %}E-Badge Creator & Verification Portal - UMMU HABEEBA VIRTUAL CAMPUS{% endblock %}</title>
     
-    <!-- Google Fonts Arabic (Cairo & Amiri) -->
+    <!-- Google Fonts (Cairo & Amiri for Arabic Badge + Inter for English UI) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons & CropperJS & QRCodeJS & HTML5-QRCode -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -31,26 +31,26 @@
                 </div>
                 <div class="brand-text">
                     <span class="brand-sub">UMMU HABEEBA VIRTUAL CAMPUS</span>
-                    <h1 class="brand-title">منصة البطاقات الإلكترونية / E-Badge System</h1>
+                    <h1 class="brand-title">E-Badge Creation System</h1>
                 </div>
             </div>
 
             <nav class="app-nav">
                 <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
                     <i class="fa-solid fa-id-card"></i>
-                    <span>إنشاء البطاقة / Creator</span>
+                    <span>Create E-Badge</span>
                 </a>
                 <a href="{% url 'data_table' %}" class="nav-link {% if request.resolver_match.url_name == 'data_table' %}active{% endif %}">
                     <i class="fa-solid fa-table-list"></i>
-                    <span>جدول البيانات / Table</span>
+                    <span>Participants Directory</span>
                 </a>
                 <a href="{% url 'scanner' %}" class="nav-link {% if request.resolver_match.url_name == 'scanner' %}active{% endif %}">
                     <i class="fa-solid fa-qrcode"></i>
-                    <span>ماسح QR / Scanner</span>
+                    <span>QR Scanner</span>
                 </a>
                 <a href="/admin/" target="_blank" class="nav-link admin-link">
                     <i class="fa-solid fa-user-shield"></i>
-                    <span>الإدارة / Admin</span>
+                    <span>Django Admin</span>
                 </a>
             </nav>
         </div>
@@ -64,7 +64,7 @@
     <!-- Global Footer -->
     <footer class="app-footer">
         <div class="footer-container">
-            <p>جميع الحقوق محفوظة &copy; 2026 <strong>UMMU HABEEBA VIRTUAL CAMPUS</strong> - حفل تخرج حبيبة ٢٠٢٦ (كاليكوت)</p>
+            <p>&copy; 2026 <strong>UMMU HABEEBA VIRTUAL CAMPUS</strong> — Habeeba Graduation Ceremony 2026 (Calicut). All rights reserved.</p>
         </div>
     </footer>
 
