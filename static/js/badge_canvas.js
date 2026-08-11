@@ -1,5 +1,6 @@
 /**
- * E-Badge High-DPI Canvas Rendering Engine (Modern Visually Appealing Edition)
+ * E-Badge Canvas Rendering Engine (Minimalist Sleek Digital ID Edition)
+ * Dark Navy & Soft Gold Palette | Smooth Circular Avatar | Glassmorphism Grid
  * UMMU HABEEBA VIRTUAL CAMPUS - Graduation 2026
  */
 
@@ -9,7 +10,7 @@ class BadgeCanvasEngine {
         if (!this.canvas) return;
         this.ctx = this.canvas.getContext('2d');
         
-        // High DPI resolution for crisp printing (1080 x 1920)
+        // High DPI resolution for 8K-like crisp output (1080 x 1920)
         this.width = 1080;
         this.height = 1920;
         this.canvas.width = this.width;
@@ -78,228 +79,152 @@ class BadgeCanvasEngine {
 
         ctx.clearRect(0, 0, w, h);
 
-        // 1. Background Fill with Subtle Sunburst & Cream Gradient
-        const bgGrad = ctx.createLinearGradient(0, 0, w, h);
-        bgGrad.addColorStop(0, '#FFFDF7');
-        bgGrad.addColorStop(0.5, '#FAF5E8');
-        bgGrad.addColorStop(1, '#FFFBF0');
+        // 1. Dark Navy Gradient Background (#0F172A -> #1E1B4B -> #0B0F19)
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        bgGrad.addColorStop(0, '#0F172A');
+        bgGrad.addColorStop(0.5, '#1E1B4B');
+        bgGrad.addColorStop(1, '#0B0F19');
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Subtle Radial Glow in Center
-        const radialGlow = ctx.createRadialGradient(w / 2, 700, 100, w / 2, 700, 600);
-        radialGlow.addColorStop(0, 'rgba(245, 158, 11, 0.12)');
-        radialGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        ctx.fillStyle = radialGlow;
+        // Soft Radial Gold Ambient Glow behind Avatar
+        const ambientGlow = ctx.createRadialGradient(w / 2, 580, 50, w / 2, 580, 450);
+        ambientGlow.addColorStop(0, 'rgba(212, 175, 55, 0.18)');
+        ambientGlow.addColorStop(1, 'rgba(15, 23, 42, 0)');
+        ctx.fillStyle = ambientGlow;
         ctx.fillRect(0, 0, w, h);
 
-        // 2. Modern Geometric Accents & Floating Gold Shapes
-        this.drawGeometricAccents(ctx, w, h);
+        // 2. Frosted Glassmorphism Main Card Container
+        this.drawGlassCard(ctx, 80, 80, w - 160, h - 160);
 
-        // 3. Top Yellow/Gold 3D Arch Header Banner
-        this.drawHeaderBanner(ctx, w);
+        // 3. Top Section: Institution Logo & Crisp Arabic Header
+        this.drawTopInstitutionHeader(ctx, w, 150);
 
-        // 4. Central Metallic Hexagonal Photo Frame
-        this.drawPhotoHexagon(ctx, w, 680, 240);
+        // 4. Smooth Circular Avatar Portrait Frame
+        this.drawCircularAvatar(ctx, w / 2, 600, 210);
 
-        // 5. Participant Name & Role Tag
-        this.drawParticipantIdentity(ctx, w, 1040);
+        // 5. Participant Name & Status Pill Badge
+        this.drawIdentitySection(ctx, w, 880);
 
-        // 6. Metadata Fields with Dotted Lines
-        this.drawDetailsList(ctx, w, 1220);
+        // 6. Aligned Key-Value Metadata Grid
+        this.drawMetadataGrid(ctx, w, 1120);
 
-        // 7. QR Code Box (Bottom Left)
-        this.drawQRCode(ctx, 160, h - 360, 260);
+        // 7. Integrated Bottom Corner Square QR Code
+        this.drawBottomQRCode(ctx, 150, h - 420, 250);
     }
 
-    drawGeometricAccents(ctx, w, h) {
+    drawGlassCard(ctx, x, y, width, height) {
         ctx.save();
-        
-        // Polished Gold & Dark Hexagons
-        ctx.strokeStyle = '#0F172A';
-        ctx.lineWidth = 6;
 
-        // Top Left Hexagon Outline
-        ctx.strokeStyle = 'rgba(15, 23, 42, 0.7)';
-        this.drawHexagonPath(ctx, 40, 260, 110);
-        ctx.stroke();
+        // Card Drop Shadow
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        ctx.shadowBlur = 30;
+        ctx.shadowOffsetY = 15;
 
-        // Right side Floating Hexagons
-        ctx.fillStyle = 'rgba(245, 158, 11, 0.9)';
-        this.drawHexagonPath(ctx, w - 30, 840, 140);
+        // Glassmorphism Card Fill (Translucent Dark Navy)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+        ctx.beginPath();
+        ctx.roundRect(x, y, width, height, 36);
         ctx.fill();
+
+        ctx.shadowColor = 'transparent';
+
+        // Soft Gold Frosted Border
+        ctx.lineWidth = 2.5;
+        const goldBorderGrad = ctx.createLinearGradient(x, y, x + width, y + height);
+        goldBorderGrad.addColorStop(0, 'rgba(212, 175, 55, 0.6)');
+        goldBorderGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
+        goldBorderGrad.addColorStop(1, 'rgba(212, 175, 55, 0.4)');
+        ctx.strokeStyle = goldBorderGrad;
         ctx.stroke();
-
-        ctx.strokeStyle = 'rgba(15, 23, 42, 0.6)';
-        this.drawHexagonPath(ctx, w - 40, 1260, 110);
-        ctx.stroke();
-
-        // Bottom Left Hexagon
-        ctx.fillStyle = '#F59E0B';
-        this.drawHexagonPath(ctx, 30, h - 220, 120);
-        ctx.fill();
-        ctx.stroke();
-
-        // Floating Decorative Circles
-        const dots = [
-            { x: w - 160, y: 340, r: 24, fill: '#0F172A' },
-            { x: w - 110, y: 440, r: 16, fill: '#F59E0B' },
-            { x: w - 90, y: 520, r: 28, fill: '#0F172A' },
-            { x: 120, y: 920, r: 20, fill: '#F59E0B' },
-            { x: 80, y: 1040, r: 32, fill: '#0F172A' },
-            { x: w - 260, y: 1540, r: 26, fill: '#0F172A' },
-            { x: w - 180, y: 1660, r: 38, stroke: '#0F172A', width: 5 },
-            { x: w - 100, y: 1780, r: 24, fill: '#F59E0B' },
-            { x: 620, y: h - 160, r: 45, stroke: '#0F172A', width: 6 },
-            { x: 740, y: h - 80, r: 30, fill: '#0F172A' },
-        ];
-
-        dots.forEach(d => {
-            ctx.beginPath();
-            ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-            if (d.fill) {
-                ctx.fillStyle = d.fill;
-                ctx.fill();
-            }
-            if (d.stroke) {
-                ctx.strokeStyle = d.stroke;
-                ctx.lineWidth = d.width || 4;
-                ctx.stroke();
-            }
-        });
 
         ctx.restore();
     }
 
-    drawHeaderBanner(ctx, w) {
+    drawTopInstitutionHeader(ctx, w, startY) {
         ctx.save();
-        
-        // Drop Shadow for Banner
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
-        ctx.shadowBlur = 20;
-        ctx.shadowOffsetY = 8;
-
-        // Curved Gold Arch Container
-        ctx.beginPath();
-        ctx.moveTo(130, 0);
-        ctx.lineTo(w - 130, 0);
-        ctx.lineTo(w - 170, 420);
-        ctx.quadraticCurveTo(w / 2, 495, 170, 420);
-        ctx.closePath();
-
-        const bannerGrad = ctx.createLinearGradient(0, 0, 0, 480);
-        bannerGrad.addColorStop(0, '#FBBF24');
-        bannerGrad.addColorStop(0.5, '#F59E0B');
-        bannerGrad.addColorStop(1, '#D97706');
-        ctx.fillStyle = bannerGrad;
-        ctx.fill();
-
-        ctx.shadowColor = 'transparent';
-        ctx.strokeStyle = '#0F172A';
-        ctx.lineWidth = 10;
-        ctx.stroke();
-
-        // Header Text & Logo
         ctx.textAlign = 'center';
 
-        // Logo Purple Dome Circle
-        ctx.fillStyle = '#312E81';
+        // Institution Logo Icon Badge
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.15)';
+        ctx.strokeStyle = '#D4AF37';
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(w / 2, 85, 36, 0, Math.PI * 2);
+        ctx.arc(w / 2, startY, 40, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#F59E0B';
-        ctx.lineWidth = 3;
         ctx.stroke();
 
-        ctx.fillStyle = '#F59E0B';
-        ctx.font = 'bold 34px Cairo';
-        ctx.fillText('🎓', w / 2, 96);
+        ctx.fillStyle = '#D4AF37';
+        ctx.font = 'bold 36px Cairo';
+        ctx.fillText('🎓', w / 2, startY + 12);
 
-        // Brand Sub-heading
-        ctx.fillStyle = '#312E81';
-        ctx.font = '900 36px Cairo';
-        ctx.fillText('UMMU HABEEBA', w / 2, 160);
-        ctx.fillStyle = '#0F172A';
-        ctx.font = '800 24px Cairo';
-        ctx.fillText('VIRTUAL CAMPUS', w / 2, 195);
+        // Institution Name
+        ctx.fillStyle = '#D4AF37';
+        ctx.font = '800 28px Cairo';
+        ctx.fillText('UMMU HABEEBA VIRTUAL CAMPUS', w / 2, startY + 75);
 
-        // Main Event Title: حفل تخرج حبيبة ٢٠٢٦
-        ctx.fillStyle = '#0F172A';
-        ctx.font = '900 64px Cairo';
+        // Event Title: حفل تخرج حبيبة ٢٠٢٦
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '900 52px Cairo';
         const yearArabic = this.toArabicDigits('2026');
-        ctx.fillText(`حفل تَخرّج حبيبة ${yearArabic}`, w / 2, 285);
+        ctx.fillText(`حفل تَخرّج حبيبة ${yearArabic}`, w / 2, startY + 145);
 
-        // Date & Location Pill Accent
-        ctx.font = '800 48px Cairo';
+        // Date & Location Subtitle
+        ctx.fillStyle = '#94A3B8';
+        ctx.font = '700 32px Cairo';
         const dateArabic = this.toArabicDigits('16');
-        ctx.fillText(`${dateArabic} أغسطس`, w / 2, 355);
-        ctx.fillText('كاليكوت', w / 2, 425);
+        ctx.fillText(`${dateArabic} أغسطس • كاليكوت`, w / 2, startY + 200);
 
         ctx.restore();
     }
 
-    drawHexagonPath(ctx, cx, cy, radius) {
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-            const angle = (Math.PI / 3) * i - Math.PI / 6;
-            const x = cx + radius * Math.cos(angle);
-            const y = cy + radius * Math.sin(angle);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-    }
-
-    drawPhotoHexagon(ctx, w, centerY, radius) {
+    drawCircularAvatar(ctx, cx, cy, radius) {
         ctx.save();
 
-        const cx = w / 2;
-        const cy = centerY;
-
-        // Outer Hexagon Drop Shadow & Glow Ring
-        ctx.shadowColor = 'rgba(15, 23, 42, 0.25)';
+        // Outer Soft Gold Ring with Glow
+        ctx.shadowColor = 'rgba(212, 175, 55, 0.4)';
         ctx.shadowBlur = 24;
-        ctx.shadowOffsetY = 10;
 
-        ctx.lineWidth = 16;
-        ctx.strokeStyle = '#0F172A';
-        this.drawHexagonPath(ctx, cx, cy, radius + 12);
-        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius + 8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.15)';
         ctx.fill();
+
+        ctx.lineWidth = 4;
+        const ringGrad = ctx.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius);
+        ringGrad.addColorStop(0, '#F3E5AB');
+        ringGrad.addColorStop(0.5, '#D4AF37');
+        ringGrad.addColorStop(1, '#AA7C11');
+        ctx.strokeStyle = ringGrad;
         ctx.stroke();
 
         ctx.shadowColor = 'transparent';
 
-        // Gold Ring Overlay
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#F59E0B';
-        this.drawHexagonPath(ctx, cx, cy, radius + 4);
-        ctx.stroke();
-
-        // Inner Hexagon Clip Mask
-        this.drawHexagonPath(ctx, cx, cy, radius);
+        // Inner Circle Clip Mask
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.clip();
 
         if (this.data.photoImg) {
             const img = this.data.photoImg;
             const aspect = img.width / img.height;
-            let drawW = radius * 2.2;
+            let drawW = radius * 2;
             let drawH = drawW / aspect;
-            if (drawH < radius * 2.2) {
-                drawH = radius * 2.2;
+            if (drawH < radius * 2) {
+                drawH = radius * 2;
                 drawW = drawH * aspect;
             }
             ctx.drawImage(img, cx - drawW / 2, cy - drawH / 2, drawW, drawH);
         } else {
-            // Default Stylish Student Placeholder
-            const grad = ctx.createLinearGradient(cx, cy - radius, cx, cy + radius);
-            grad.addColorStop(0, '#E2E8F0');
-            grad.addColorStop(1, '#CBD5E1');
-            ctx.fillStyle = grad;
+            // Default Smooth Portrait Avatar Background
+            const bgGrad = ctx.createLinearGradient(cx, cy - radius, cx, cy + radius);
+            bgGrad.addColorStop(0, '#1E293B');
+            bgGrad.addColorStop(1, '#0F172A');
+            ctx.fillStyle = bgGrad;
             ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
 
-            ctx.fillStyle = '#475569';
-            ctx.font = '900 130px Cairo';
+            ctx.fillStyle = '#94A3B8';
+            ctx.font = '800 120px Cairo';
             ctx.textAlign = 'center';
             ctx.fillText('🎓', cx, cy + 45);
         }
@@ -307,130 +232,106 @@ class BadgeCanvasEngine {
         ctx.restore();
     }
 
-    drawParticipantIdentity(ctx, w, startY) {
+    drawIdentitySection(ctx, w, startY) {
         ctx.save();
         ctx.textAlign = 'center';
 
-        // Participant Full Name
-        ctx.fillStyle = '#0F172A';
-        ctx.font = '900 62px Cairo';
+        // Student Full Name (Crisp Bold Typography)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '900 58px Cairo';
         ctx.fillText(this.data.fullName || 'الاسم الكامل', w / 2, startY);
 
-        // Role Pill Badge (e.g. متعلّمة / خريجة)
+        // Status Pill Badge (e.g. متعلّمة / خريجة)
         const roleText = this.data.role || 'متعلّمة';
-        ctx.font = '800 38px Cairo';
+        ctx.font = '700 32px Cairo';
         const textMetrics = ctx.measureText(roleText);
-        const pillW = Math.max(textMetrics.width + 110, 330);
-        const pillH = 78;
+        const pillW = Math.max(textMetrics.width + 80, 260);
+        const pillH = 64;
         const pillX = w / 2 - pillW / 2;
-        const pillY = startY + 30;
+        const pillY = startY + 25;
 
-        // Shadow & Gradient for Role Pill
-        ctx.shadowColor = 'rgba(15, 23, 42, 0.2)';
-        ctx.shadowBlur = 12;
-        ctx.shadowOffsetY = 4;
-
-        ctx.fillStyle = '#0F172A';
+        // Rounded Translucent Pill Fill
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.12)';
         ctx.beginPath();
-        ctx.roundRect(pillX, pillY, pillW, pillH, 39);
+        ctx.roundRect(pillX, pillY, pillW, pillH, 32);
         ctx.fill();
 
-        ctx.shadowColor = 'transparent';
-
-        // Subtle Gold Border around Pill
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = '#F59E0B';
+        // Soft Gold Border
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#D4AF37';
         ctx.stroke();
 
-        // White Pill Text
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillText(roleText, w / 2, pillY + 53);
+        // Soft Gold Pill Text
+        ctx.fillStyle = '#F3E5AB';
+        ctx.fillText(roleText, w / 2, pillY + 44);
 
         ctx.restore();
     }
 
-    drawDetailsList(ctx, w, startY) {
+    drawMetadataGrid(ctx, w, startY) {
         ctx.save();
 
-        const fields = [
+        const items = [
             { label: 'الدُّفْعَة', value: this.data.batch },
             { label: 'السَّنَة', value: this.toArabicDigits(this.data.year) },
             { label: 'الصَّفّ', value: this.data.className },
             { label: 'الدَّؤْرَة', value: this.data.course },
         ];
 
-        const lineGap = 90;
-        const rightX = w - 180;
-        const leftX = 180;
+        const cardLeft = 140;
+        const cardRight = w - 140;
+        const rowHeight = 84;
 
-        fields.forEach((f, idx) => {
-            const currentY = startY + (idx * lineGap);
+        items.forEach((item, idx) => {
+            const currentY = startY + (idx * rowHeight);
 
-            // Label on Right (Arabic RTL)
+            // Row Container Line Separator
+            if (idx > 0) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(cardLeft, currentY - 20);
+                ctx.lineTo(cardRight, currentY - 20);
+                ctx.stroke();
+            }
+
+            // Label on Right (Soft Muted Text)
             ctx.textAlign = 'right';
-            ctx.font = '900 42px Cairo';
-            ctx.fillStyle = '#0F172A';
-            ctx.fillText(f.label, rightX, currentY);
+            ctx.font = '800 36px Cairo';
+            ctx.fillStyle = '#94A3B8';
+            ctx.fillText(item.label, cardRight - 20, currentY + 20);
 
-            const labelWidth = ctx.measureText(f.label).width;
-            const dotStartX = rightX - labelWidth - 25;
-
-            // Value text on Left
+            // Value on Left (Crisp White/Gold Text)
             ctx.textAlign = 'left';
-            ctx.font = '700 38px Cairo';
-            ctx.fillStyle = '#1E1B4B';
-            const valueText = f.value || '.........................';
-            ctx.fillText(valueText, leftX, currentY);
-
-            const valueWidth = ctx.measureText(valueText).width;
-            const dotEndX = leftX + valueWidth + 25;
-
-            // Dotted Leader Line
-            ctx.strokeStyle = '#94A3B8';
-            ctx.lineWidth = 4;
-            ctx.setLineDash([8, 10]);
-            ctx.beginPath();
-            ctx.moveTo(dotStartX, currentY - 12);
-            ctx.lineTo(dotEndX, currentY - 12);
-            ctx.stroke();
-            ctx.setLineDash([]);
+            ctx.font = '700 36px Cairo';
+            ctx.fillStyle = '#FFFFFF';
+            const displayVal = item.value || '-';
+            ctx.fillText(displayVal, cardLeft + 20, currentY + 20);
         });
 
         ctx.restore();
     }
 
-    drawQRCode(ctx, x, y, size) {
+    drawBottomQRCode(ctx, x, y, size) {
         ctx.save();
 
-        // Drop shadow for QR container
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
-        ctx.shadowBlur = 14;
-        ctx.shadowOffsetY = 6;
-
+        // QR Background Container (Sharp Square with Soft Gold Accent Border)
         ctx.fillStyle = '#FFFFFF';
-        ctx.strokeStyle = '#0F172A';
-        ctx.lineWidth = 7;
         ctx.beginPath();
-        ctx.roundRect(x, y, size, size, 24);
+        ctx.roundRect(x, y, size, size, 20);
         ctx.fill();
-        ctx.stroke();
 
-        ctx.shadowColor = 'transparent';
-
-        // Inner Gold Border Accent
-        ctx.strokeStyle = '#F59E0B';
+        ctx.strokeStyle = '#D4AF37';
         ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.roundRect(x + 5, y + 5, size - 10, size - 10, 20);
         ctx.stroke();
 
         if (this.data.qrCodeImg) {
             ctx.drawImage(this.data.qrCodeImg, x + 16, y + 16, size - 32, size - 32);
         } else {
             ctx.fillStyle = '#0F172A';
-            ctx.font = 'bold 24px Cairo';
+            ctx.font = 'bold 22px Cairo';
             ctx.textAlign = 'center';
-            ctx.fillText('QR CODE', x + size / 2, y + size / 2 + 10);
+            ctx.fillText('QR CODE', x + size / 2, y + size / 2 + 8);
         }
 
         ctx.restore();

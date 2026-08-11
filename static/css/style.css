@@ -1,25 +1,25 @@
 :root {
-    --primary-gold: #E8A838;
-    --primary-gold-bright: #F59E0B;
-    --primary-gold-hover: #D69324;
-    --gold-glow: rgba(232, 168, 56, 0.25);
-    --dark-navy: #1E1B4B;
-    --deep-slate: #0F172A;
-    --accent-black: #111827;
+    --primary-gold: #D4AF37;
+    --gold-bright: #F3E5AB;
+    --gold-hover: #AA7C11;
+    --gold-glow: rgba(212, 175, 55, 0.2);
+    --dark-navy: #0F172A;
+    --deep-slate: #0B0F19;
+    --accent-navy: #1E1B4B;
     --bg-light: #F8FAFC;
     --bg-card: #FFFFFF;
     --border-color: #E2E8F0;
-    --border-gold: rgba(232, 168, 56, 0.35);
+    --border-gold: rgba(212, 175, 55, 0.35);
     --text-main: #0F172A;
     --text-muted: #64748B;
     --success-green: #10B981;
     --danger-red: #EF4444;
     --font-arabic: 'Cairo', system-ui, -apple-system, sans-serif;
     --font-amiri: 'Amiri', serif;
-    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-    --shadow-md: 0 10px 25px -5px rgba(30, 27, 75, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-    --shadow-lg: 0 20px 40px -15px rgba(30, 27, 75, 0.16);
-    --shadow-glow: 0 0 30px rgba(232, 168, 56, 0.2);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 40px -15px rgba(15, 23, 42, 0.16);
+    --shadow-glow: 0 0 35px rgba(212, 175, 55, 0.22);
     --radius-md: 14px;
     --radius-lg: 24px;
 }
@@ -43,15 +43,15 @@ body {
 
 /* Header Navbar */
 .app-header {
-    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #110E38 100%);
+    background: linear-gradient(135deg, #0B0F19 0%, #0F172A 50%, #1E1B4B 100%);
     color: #FFFFFF;
     padding: 18px 28px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.25);
+    box-shadow: 0 4px 20px rgba(11, 15, 25, 0.3);
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 2px solid rgba(232, 168, 56, 0.3);
-    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    backdrop-filter: blur(12px);
 }
 
 .header-container {
@@ -73,14 +73,14 @@ body {
 .logo-badge-icon {
     width: 52px;
     height: 52px;
-    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%);
     color: #0F172A;
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 26px;
-    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.35);
     border: 1.5px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -125,10 +125,10 @@ body {
 }
 
 .nav-link.active {
-    background: linear-gradient(135deg, var(--primary-gold) 0%, #F59E0B 100%);
-    color: var(--dark-navy);
+    background: linear-gradient(135deg, var(--primary-gold) 0%, #AA7C11 100%);
+    color: #0F172A;
     font-weight: 800;
-    box-shadow: 0 4px 12px rgba(232, 168, 56, 0.3);
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
 }
 
 .admin-link {
@@ -180,7 +180,7 @@ body {
     }
 }
 
-/* Luxury Card Boxes */
+/* Sleek Minimalist Card Boxes */
 .card-box {
     background: var(--bg-card);
     border-radius: var(--radius-lg);
@@ -279,25 +279,25 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%);
     color: #0F172A;
-    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #E8A838 0%, #B45309 100%);
+    background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 100%);
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(245, 158, 11, 0.45);
+    box-shadow: 0 10px 24px rgba(212, 175, 55, 0.45);
 }
 
 .btn-dark {
-    background: linear-gradient(135deg, #1E1B4B 0%, #0F172A 100%);
+    background: linear-gradient(135deg, #0B0F19 0%, #1E1B4B 100%);
     color: #FFFFFF;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.2);
+    box-shadow: 0 6px 18px rgba(11, 15, 25, 0.25);
 }
 
 .btn-dark:hover {
-    background: linear-gradient(135deg, #2E2A72 0%, #1E1B4B 100%);
+    background: linear-gradient(135deg, #1E1B4B 0%, #0F172A 100%);
     transform: translateY(-2px);
 }
 
@@ -369,7 +369,7 @@ body {
     color: var(--text-muted);
 }
 
-/* Badge Canvas Live Preview Wrapper */
+/* Badge Canvas Preview Wrapper */
 .preview-container {
     display: flex;
     flex-direction: column;
@@ -377,9 +377,9 @@ body {
 }
 
 .canvas-wrapper {
-    background: #FFFFFF;
+    background: #0B0F19;
     border-radius: var(--radius-lg);
-    padding: 18px;
+    padding: 16px;
     box-shadow: var(--shadow-lg), var(--shadow-glow);
     border: 2px solid var(--border-gold);
     width: 100%;
@@ -439,7 +439,7 @@ canvas#badgeCanvas {
 
 .stat-icon.total { background: #EEF2FF; color: var(--dark-navy); }
 .stat-icon.verified { background: #ECFDF5; color: var(--success-green); }
-.stat-icon.pending { background: #FFFBEB; color: var(--primary-gold-bright); }
+.stat-icon.pending { background: #FFFBEB; color: var(--primary-gold); }
 
 .stat-number {
     font-size: 26px;
@@ -568,7 +568,7 @@ canvas#badgeCanvas {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(11, 15, 25, 0.8);
     backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
@@ -604,7 +604,7 @@ canvas#badgeCanvas {
 
 /* Footer */
 .app-footer {
-    background: #0F172A;
+    background: #0B0F19;
     color: #94A3B8;
     text-align: center;
     padding: 24px;
